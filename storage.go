@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"gorm.io/driver/postgres"
@@ -23,6 +24,14 @@ func (s *PostgresStore) Init() error {
 }
 
 func (s *PostgresStore) CreateAccount(a *Account) error {
+	result := s.db.Create(a)
+
+	if err := result.Error; err != nil {
+		return err
+	}
+
+	fmt.Printf("%+v\n", result)
+
 	return nil
 }
 

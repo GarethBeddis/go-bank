@@ -8,8 +8,8 @@ import (
 )
 
 type Account struct {
-	ID        uuid.UUID `json:"id"`
-	Number    uuid.UUID `json:"number"`
+	ID        uint32    `json:"id"`
+	Number    uint32    `json:"number"`
 	Username  string    `json:"username"`
 	Balance   int64     `json:"balance"`
 	CreatedAt time.Time `json:"created_at"`
@@ -18,10 +18,11 @@ type Account struct {
 
 func CreateAccount(username string) *Account {
 	return &Account{
-		ID:        uuid.New(),
-		Number:    uuid.New(),
+		ID:        uuid.New().ID(),
+		Number:    uuid.New().ID(),
 		Username:  username,
 		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
 	}
 }
 

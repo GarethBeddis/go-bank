@@ -19,11 +19,7 @@ type PostgresStore struct {
 }
 
 func (s *PostgresStore) Init() error {
-	return nil
-}
-
-func (s *PostgresStore) createAccountTable() error {
-	return nil
+	return s.db.AutoMigrate(&Account{})
 }
 
 func (s *PostgresStore) CreateAccount(a *Account) error {
@@ -49,8 +45,6 @@ func NewPostgresStore() (*PostgresStore, error) {
 	}
 
 	db, err := gorm.Open(postgres.New(postgresConfig), &gorm.Config{})
-
-	db.AutoMigrate(&Account{})
 
 	if err != nil {
 		log.Fatalf("Cannot connect to postgres DB: %v", err)

@@ -10,6 +10,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	server := NewApiServer(":8080", store)
-	server.Run()
+	log.Printf("%+v\n", store)
+
+	// server := NewApiServer(":8080", store)
+	// server.Run()
 }

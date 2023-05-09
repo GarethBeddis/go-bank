@@ -1,22 +1,24 @@
 package main
 
 import (
-	"math/rand"
+	"time"
 
 	_ "github.com/lib/pq"
+	"gorm.io/gorm"
 )
 
 type Account struct {
-	ID       int    `json:"id"` // todo: change to uuid
-	Username string `json:"username"`
-	Number   int64  `json:"number"`
-	Balance  int64  `json:"balance"`
+	ID        uint  `gorm:"primaryKey"`
+	Number    int64 `gorm:"type:uuid;default:gen_random_uuid()"`
+	Username  string
+	Balance   int64
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 func NewAccount(username string) *Account {
 	return &Account{
-		ID:       rand.Intn(100000),
 		Username: username,
-		Number:   int64(rand.Intn(10000000)),
 	}
 }

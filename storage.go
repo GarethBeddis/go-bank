@@ -1,6 +1,11 @@
 package main
 
-import "database/sql"
+import (
+	"log"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+)
 
 type Storage interface {
 	CreateAccount(*Account) error
@@ -10,7 +15,15 @@ type Storage interface {
 }
 
 type PostgresStore struct {
-	db *sql.DB
+	db *gorm.DB
+}
+
+func (s *PostgresStore) Init() error {
+	return nil
+}
+
+func (s *PostgresStore) createAccountTable() error {
+	return nil
 }
 
 func (s *PostgresStore) CreateAccount(a *Account) error {
@@ -30,14 +43,22 @@ func (s *PostgresStore) DeleteAccount(id int) error {
 }
 
 func NewPostgresStore() (*PostgresStore, error) {
-	connStr := "user=postgres dbname=postgres password=gobank312 sslmode=disable"
-	db, err := sql.Open("postgres", connStr)
+	postgresConfig := postgres.Config{
+		DSN:                  "host=localhost port=5432 user=postgres dbname=postgres password=gobank312 sslmode=disable",
+		PreferSimpleProtocol: true, // disables implicit prepared statement usage
+	}
+
+	db, err := gorm.Open(postgres.New(postgresConfig), &gorm.Config{})
+
+	db.AutoMigrate(&Account{})
 
 	if err != nil {
+		log.Fatalf("Cannot connect to postgres DB: %v", err)
 		return nil, err
 	}
 
-	if err := db.Ping(); err != nil {
+	postgresDB, _ := db.DB()
+	if err := postgresDB.Ping(); err != nil {
 		return nil, err
 	}
 

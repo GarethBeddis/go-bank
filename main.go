@@ -14,6 +14,9 @@ func main() {
 		log.Fatal(err)
 	}
 
+	store.db.AutoMigrate(&Account{})
+	// store.db.Delete(&Account{}, "")
+
 	// log.Printf("%+v\n", store)
 
 	server := NewApiServer(":8080", store)

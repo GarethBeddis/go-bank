@@ -11,6 +11,7 @@ import (
 type Storage interface {
 	CreateAccount(*Account) error
 	GetAccountById(int) (*Account, error)
+	GetAccounts() ([]*Account, error)
 	UpdateAccount(*Account) error
 	DeleteAccount(int) error
 }
@@ -24,7 +25,7 @@ func (s *PostgresStore) Init() error {
 }
 
 func (s *PostgresStore) CreateAccount(a *Account) error {
-	result := s.db.Create(a)
+	result := s.db.Create(&a)
 
 	if err := result.Error; err != nil {
 		return err
@@ -33,6 +34,18 @@ func (s *PostgresStore) CreateAccount(a *Account) error {
 	fmt.Printf("%+v\n", result)
 
 	return nil
+}
+
+func (s *PostgresStore) GetAccounts() ([]*Account, error) {
+	var accounts []*Account
+
+	res := s.db.Find(&accounts)
+
+	if res.Error != nil {
+		fmt.Println(res.Error)
+	}
+
+	return accounts, nil
 }
 
 func (s *PostgresStore) GetAccountById(id int) (*Account, error) {

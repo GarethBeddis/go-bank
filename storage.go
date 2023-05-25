@@ -10,10 +10,10 @@ import (
 
 type Storage interface {
 	CreateAccount(*Account) error
-	GetAccountById(int) (*Account, error)
+	GetAccountById(uint) (*Account, error)
 	GetAccounts() ([]*Account, error)
 	UpdateAccount(*Account) error
-	DeleteAccount(int) error
+	DeleteAccount(uint) error
 }
 
 type PostgresStore struct {
@@ -42,21 +42,29 @@ func (s *PostgresStore) GetAccounts() ([]*Account, error) {
 	res := s.db.Find(&accounts)
 
 	if res.Error != nil {
-		fmt.Println(res.Error)
+		return nil, res.Error
 	}
 
 	return accounts, nil
 }
 
-func (s *PostgresStore) GetAccountById(id int) (*Account, error) {
-	return nil, nil
+func (s *PostgresStore) GetAccountById(id uint) (*Account, error) {
+	var account *Account
+
+	res := s.db.Find(&Account{ID: id}, &account)
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return account, nil
 }
 
 func (s *PostgresStore) UpdateAccount(a *Account) error {
 	return nil
 }
 
-func (s *PostgresStore) DeleteAccount(id int) error {
+func (s *PostgresStore) DeleteAccount(id uint) error {
 	return nil
 }
 
